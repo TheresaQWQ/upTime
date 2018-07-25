@@ -1,8 +1,8 @@
 <?
-$sql_host = "localhost";
-$sql_user = "jk";
-$sql_pwd = "20030616a";
-$sql_dbname = "jk";
+$sql_host = "";
+$sql_user = "";
+$sql_pwd = "";
+$sql_dbname = "";
 
 $conn = mysqli_connect($sql_host, $sql_user, $sql_pwd, $sql_dbname);
 if (!$conn) {

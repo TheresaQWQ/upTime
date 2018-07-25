@@ -5,10 +5,10 @@ if(!$allow){
     echo '{"code":-1,"msg":"禁止添加监控"}';
     exit;
 }
-$sql_host = "localhost";
-$sql_user = "jk";
-$sql_pwd = "20030616a";
-$sql_dbname = "jk";
+$sql_host = "";
+$sql_user = "";
+$sql_pwd = "";
+$sql_dbname = "";
 $conn = mysqli_connect($sql_host, $sql_user, $sql_pwd, $sql_dbname);
 
 echo add($_GET["timeout"],$_GET["name"],$_GET["ip"],$_GET["port"],$_GET["type"],$_GET["data"],$_GET["head"],$_GET["time"],$conn);
