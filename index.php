@@ -1,26 +1,9 @@
-<?
-$sql_host = "";
-$sql_user = "";
-$sql_pwd = "";
-$sql_dbname = "";
-
-$conn = mysqli_connect($sql_host, $sql_user, $sql_pwd, $sql_dbname);
-if (!$conn) {
-    exit;
-}
- 
-$sql = "SELECT * FROM `list`";
-$result = mysqli_query($conn, $sql);
- 
-if (mysqli_num_rows($result) > 0) {
-    $i=0;
-?>
 <!DOCTYPE html>
 <html>
     
     <head>
         <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-        <title>网站监控</title>
+        <title>Public Status Page</title>
         <link rel="stylesheet" href="//cdnjs.loli.net/ajax/libs/mdui/0.4.1/css/mdui.min.css">
         <script src="//cdnjs.loli.net/ajax/libs/mdui/0.4.1/js/mdui.min.js"></script>
     </head>
@@ -74,10 +57,10 @@ if (mysqli_num_rows($result) > 0) {
         <div class="page mdui-shadow-2">
             <div class="top"></div>
             <div class="text">
-                 <h1 class="mdui-text-center">网站监控</h1>
+                 <h1 class="mdui-text-center">Public Status Page</h1>
                 <div class="mdui-tab mdui-tab-full-width" mdui-tab>
-                    <a href="#tab1" class="mdui-ripple">监控列表</a>
-                    <a href="#tab2" class="mdui-ripple">添加监控</a>
+                    <a href="#tab1" class="mdui-ripple">列表</a>
+                    <a href="#tab2" class="mdui-ripple">添加</a>
                 </div>
                 <div id="tab1" class="mdui-p-a-2">
                     <div class="mdui-table-fluid">
@@ -90,24 +73,42 @@ if (mysqli_num_rows($result) > 0) {
                                     <th>状态</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="mdui-typo">
                                 <?
+                                $sql_host = "";
+                                $sql_user = "";
+                                $sql_pwd = "";
+                                $sql_dbname = "";
+                                
+                                $conn = mysqli_connect($sql_host, $sql_user, $sql_pwd, $sql_dbname);
+                                if (!$conn) {
+                                    exit;
+                                }
+                                 
+                                $sql = "SELECT * FROM `list`";
+                                $result = mysqli_query($conn, $sql);
+                                 
+                                if (mysqli_num_rows($result) > 0) {
+                                    $i=0;
                                 while($row = mysqli_fetch_assoc($result)) {
-                                $id = $row["id"];
-                                $sql = "SELECT * FROM `log` WHERE `id` = '$id' LIMIT 1";
-                                $res = mysqli_query($conn, $sql);
-                                $r = mysqli_fetch_assoc($res);
-                                if($r["status"]){
+                                    $id = $row["id"];
+                                    $sql = "SELECT * FROM `log` WHERE `id` = '$id' ORDER BY `time` DESC LIMIT 1";
+                                    $res = mysqli_query($conn, $sql);
+                                    $r = mysqli_fetch_assoc($res);
+                                if($r["status"] == "true"){
                                     $online = '<td style="color: green">在线';
                                 }else{
                                     $online = '<td style="color: red">离线';
                                 }
+                                
+                                $name = '<a href="./s.php?id='.$id.'">'.$row["name"].'</a>';
+                                
                                     $i++;
                                     echo '<tr><td>';
                                     echo $i;
                                     echo '</td>';
                                     echo '<td>';
-                                    echo $row["name"];
+                                    echo $name;
                                     echo '</td>';
                                     echo '<td>';
                                     echo $row["type"];
@@ -128,6 +129,9 @@ if (mysqli_num_rows($result) > 0) {
                         <input id="name" class="mdui-textfield-input" type="text" placeholder="监控名称"/>
                     </div>
                     <div class="mdui-textfield mdui-textfield-floating-label">
+                        <input id="email" class="mdui-textfield-input" type="email" placeholder="邮箱（离线时邮件通知）"/>
+                    </div>
+                    <div class="mdui-textfield mdui-textfield-floating-label">
                         <input id="type" class="mdui-textfield-input" type="text" placeholder="类型（GET，POST或PORT，大写）"/>
                     </div>
                     <div class="mdui-textfield mdui-textfield-floating-label">
@@ -140,13 +144,13 @@ if (mysqli_num_rows($result) > 0) {
                         <input id="timeout" class="mdui-textfield-input" type="text" placeholder="超时时间（单位秒）"/>
                     </div>
                     <div class="mdui-textfield mdui-textfield-floating-label">
-                        <input id="data" class="mdui-textfield-input" type="text" placeholder="POST提交数据（Json格式）"/>
+                        <textarea id="data" class="mdui-textfield-input" rows="4" placeholder="POST提交数据（Json格式）"></textarea>
                     </div>
                     <div class="mdui-textfield mdui-textfield-floating-label">
-                        <input id="head" class="mdui-textfield-input" type="text" placeholder="头信息（Json格式）"/>
+                        <textarea id="head" class="mdui-textfield-input" rows="4" placeholder="头信息（Json格式）"></textarea>
                     </div>
                     <div class="mdui-textfield mdui-textfield-floating-label">
-                        <input id="time" class="mdui-textfield-input" type="text" placeholder="监控频率（多少秒一次）"/>
+                        <input id="time" class="mdui-textfield-input" type="text" placeholder="监控频率（多少秒一次，至少120秒）"/>
                     </div>
                     <center>
                         <button onclick="ajax();" class="mdui-btn mdui-btn-raised mdui-ripple">提交</button>
@@ -166,6 +170,7 @@ if (mysqli_num_rows($result) > 0) {
                 var head = document.getElementById("head").value;
                 var time = document.getElementById("time").value;
                 var name = document.getElementById("name").value;
+                var email = document.getElementById("email").value;
                 if (window.XMLHttpRequest){
                     // IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
                     xmlhttp=new XMLHttpRequest();
@@ -198,7 +203,7 @@ if (mysqli_num_rows($result) > 0) {
                     }
                 }
                 //Ajax请求
-                xmlhttp.open("GET","./add.php?timeout="+timeout+"&name="+name+"&ip="+ip+"&port="+port+"&type="+type+"&data="+data+"&head="+head+"&time="+time,true);
+                xmlhttp.open("GET","./add.php?timeout="+timeout+"&email="+email+"&name="+name+"&ip="+ip+"&port="+port+"&type="+type+"&data="+data+"&head="+head+"&time="+time,true);
                 xmlhttp.send();
             }
         </script>

@@ -1,5 +1,6 @@
 <?php
 error_reporting(0);
+include("send.php");
 
 $sql_host = "";
 $sql_user = "";
@@ -8,10 +9,18 @@ $sql_dbname = "";
 $connA = mysqli_connect($sql_host, $sql_user, $sql_pwd, $sql_dbname);
 $connB = mysqli_connect($sql_host, $sql_user, $sql_pwd, $sql_dbname);
 $connC = mysqli_connect($sql_host, $sql_user, $sql_pwd, $sql_dbname);
+$con = mysqli_connect($sql_host, $sql_user, $sql_pwd, $sql_dbname);
 
 get($connA);
 post($connB);
 port($connC);
+
+$t = time() - 3600;
+$sql = "DELETE FROM `log` WHERE `time` < '$t'";
+mysqli_query($con, $sql);
+
+mysqli_close($con);
+
 function get($conn){
     if (!$conn) {
         exit;
@@ -20,14 +29,12 @@ function get($conn){
     $sql = "SELECT * FROM `list` WHERE `type` = 'GET'";
     $result = mysqli_query($conn, $sql);
     
-    echo mysqli_error($conn);
-    
     if (mysqli_num_rows($result) > 0) {
         while($row = mysqli_fetch_assoc($result)) {
             $lastTime = $row["lastTime"];
             $time = time();
             if($time >= $lastTime + $row["time"] || $lastTime == 0){
-                curl_get($row["ip"],$row["id"],$row["head"],$row["timeout"]);
+                curl_get($row["ip"],$row["id"],$row["head"],$row["timeout"],$row["email"]);
             }
         }
     }
@@ -48,7 +55,7 @@ function post($conn) {
             $lastTime = $row["lastTime"];
             $time = time();
             if ($time >= $lastTime + $row["time"]) {
-                curl_post($row["ip"],$row["id"],$row["head"],$row["data"],$row["timeout"]);
+                curl_post($row["ip"],$row["id"],$row["head"],$row["data"],$row["timeout"],$row["email"]);
             }
         }
     }
@@ -69,7 +76,7 @@ function port($conn){
             $lastTime = $row["lastTime"];
             $time = time();
             if($time >= $lastTime + $row["time"]){
-                port_get($row["id"],$row["ip"],$row["port"]);
+                port_get($row["id"],$row["ip"],$row["port"],$row["timeout"],$row["email"]);
             }
         }
     }
@@ -77,46 +84,9 @@ function port($conn){
     mysqli_close($conn);
 }
 
-//计时器 start
-function runtimeA($mode = 0) {
-    static $t;
-    if (!$mode) {
-        $t = microtime();
-        return;
-    }
-    $t1 = microtime();
-    list($m0,$s0) = split(" ",$t);
-    list($m1,$s1) = split(" ",$t1);
-    return sprintf("%.3f",($s1+$m1-$s0-$m0)*1000);
-}
-
-function runtimeB($mode = 0) {
-    static $t;
-    if (!$mode) {
-        $t = microtime();
-        return;
-    }
-    $t1 = microtime();
-    list($m0,$s0) = split(" ",$t);
-    list($m1,$s1) = split(" ",$t1);
-    return sprintf("%.3f",($s1+$m1-$s0-$m0)*1000);
-}
-
-function runtimeC($mode = 0) {
-    static $t;
-    if (!$mode) {
-        $t = microtime();
-        return;
-    }
-    $t1 = microtime();
-    list($m0,$s0) = split(" ",$t);
-    list($m1,$s1) = split(" ",$t1);
-    return sprintf("%.3f",($s1+$m1-$s0-$m0)*1000);
-}
-//计时器 end
-
-function curl_get($url,$id,$head,$timeout) {
-    runtimeA();
+function curl_get($url,$id,$head,$timeout,$email) {
+    $t = new runTime;
+    $t->runTime();
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_NOBODY, true);
@@ -129,16 +99,19 @@ function curl_get($url,$id,$head,$timeout) {
     curl_exec($ch);
     $httpCode = curl_getinfo($ch,CURLINFO_HTTP_CODE);
     curl_close($ch);
-    $time = runtimeA(1);
+    $time = $t->runTime(1);
     if(200 <= $httpCode && $httpCode < 300 || $httpCode == 301 || $httpCode == 302){
         sql_add($id,$httpCode,"true",$time);
     }else{
         sql_add($id,$httpCode,"false",-1);
+        send_email($url,$id,$email);
     }
 }
 
-function curl_post($url,$id,$head,$data,$timeout) {
-    runtimeB();
+function curl_post($url,$id,$head,$data,$timeout,$email) {
+    $t = new runTime;
+    $t->runTime();
+    
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_NOBODY, true);
@@ -156,25 +129,30 @@ function curl_post($url,$id,$head,$data,$timeout) {
     curl_exec($ch);
     $httpCode = curl_getinfo($ch,CURLINFO_HTTP_CODE);
     curl_close($ch);
-    $time = runtimeB(1);
+    $time = $t->runTime(1);
     if(200 <= $httpCode && $httpCode < 300 || $httpCode == 301 || $httpCode == 302){
         sql_add($id,$httpCode,"true",$time);
     }else{
         sql_add($id,$httpCode,"false",$time);
+        send_email($url,$id,$email);
     }
 }
 
-function port_get($id,$ip,$port){
-    runtimeC();
-    $health = new Health();
-    $health->check($ip, $port);
-    $r = $health->status();
-    $time = runtimeC(1);
+function port_get($id,$ip,$port,$timeout,$email){
+    $t = new runTime;
+    $t->runTime();
+    
+    $r = fsockopen($ip, $port, $errno, $errstr, $timeout);
+    
+    $time = $t->runTime(1);
     if($r){
         sql_add($id,-1,"true",$time);
     }else{
         sql_add($id,-1,"false",-1);
+        send_email($ip.":".$port,$id,$email);
     }
+    
+    fclose($r);
 }
 
 function sql_add($id,$httpCode,$status,$netTime){
@@ -187,10 +165,10 @@ function sql_add($id,$httpCode,$status,$netTime){
     $time = time();
     
     $sql = "INSERT INTO `log` (id, httpCode, status, netTime, time) VALUES ('$id', '$httpCode', '$status', $netTime, $time)";
-    echo mysqli_query($conn, $sql);
+    mysqli_query($conn, $sql);
 
     $sql = "UPDATE list SET lastTime=$time WHERE id='$id'";
-    echo mysqli_query($conn, $sql);
+    mysqli_query($conn, $sql);
     
     mysqli_close($conn);
 }
@@ -210,33 +188,16 @@ function port_add($id,$httpCode,$status,$netTime){
     mysqli_close($conn);
 }
 
-class Health {
-  public static $status;
-  public function __construct()
-  {
-  }
-  public function check($ip, $port){
-    $sock = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-    socket_set_nonblock($sock);
-    socket_connect($sock,$ip, $port);
-    socket_set_block($sock);
-    self::$status = socket_select($r = array($sock), $w = array($sock), $f = array($sock), 5);
-    return(self::$status); 
-  }
-  public function checklist($lst){
-  }
-  public function status(){
-    switch(self::$status)
-    {
-      case 2:
-        return false;
-        break;
-      case 1:
-        return true;
-        break;
-      case 0:
-        return false;
-        break;
-    }  
-  }
+class runTime {
+    public function runTime($mode = 0){
+        static $t;
+        if (!$mode) {
+            $t = microtime();
+            return;
+        }
+        $t1 = microtime();
+        list($m0,$s0) = split(" ",$t);
+        list($m1,$s1) = split(" ",$t1);
+        return sprintf("%.3f",($s1+$m1-$s0-$m0)*1000);
+    }
 }
