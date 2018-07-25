@@ -1,8 +1,8 @@
 <?
-$sql_host = ""; //数据库地址
-$sql_user = ""; //数据库用户名
-$sql_pwd = ""; //数据库密码
-$sql_dbname = ""; //数据库名
+$sql_host = "localhost";
+$sql_user = "jk";
+$sql_pwd = "20030616a";
+$sql_dbname = "jk";
 
 $conn = mysqli_connect($sql_host, $sql_user, $sql_pwd, $sql_dbname);
 if (!$conn) {
@@ -125,6 +125,9 @@ if (mysqli_num_rows($result) > 0) {
                 </div>
                 <div id="tab2" class="mdui-p-a-2">
                     <div class="mdui-textfield mdui-textfield-floating-label">
+                        <input id="name" class="mdui-textfield-input" type="text" placeholder="监控名称"/>
+                    </div>
+                    <div class="mdui-textfield mdui-textfield-floating-label">
                         <input id="type" class="mdui-textfield-input" type="text" placeholder="类型（GET，POST或PORT，大写）"/>
                     </div>
                     <div class="mdui-textfield mdui-textfield-floating-label">
@@ -162,6 +165,7 @@ if (mysqli_num_rows($result) > 0) {
                 var data = document.getElementById("data").value;
                 var head = document.getElementById("head").value;
                 var time = document.getElementById("time").value;
+                var name = document.getElementById("name").value;
                 if (window.XMLHttpRequest){
                     // IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
                     xmlhttp=new XMLHttpRequest();
@@ -189,11 +193,12 @@ if (mysqli_num_rows($result) > 0) {
                             document.getElementById("data").value == "";
                             document.getElementById("head").value == "";
                             document.getElementById("time").value == "";
+                            document.getElementById("name").value == "";
                         }
                     }
                 }
                 //Ajax请求
-                xmlhttp.open("GET","./add.php?timeout="+timeout+"&ip="+ip+"&port="+port+"&type="+type+"&data="+data+"&head="+head+"&time="+time,true);
+                xmlhttp.open("GET","./add.php?timeout="+timeout+"&name="+name+"&ip="+ip+"&port="+port+"&type="+type+"&data="+data+"&head="+head+"&time="+time,true);
                 xmlhttp.send();
             }
         </script>

@@ -1,31 +1,32 @@
 <?php
-$allow = false; //允许添加监控
+$allow = true; //允许添加监控
 
 if(!$allow){
     echo '{"code":-1,"msg":"禁止添加监控"}';
     exit;
 }
+$sql_host = "localhost";
+$sql_user = "jk";
+$sql_pwd = "20030616a";
+$sql_dbname = "jk";
+$conn = mysqli_connect($sql_host, $sql_user, $sql_pwd, $sql_dbname);
 
-echo add($_GET["timeout"],$_GET["ip"],$_GET["port"],$_GET["type"],$_GET["data"],$_GET["head"],$_GET["time"]);
+echo add($_GET["timeout"],$_GET["name"],$_GET["ip"],$_GET["port"],$_GET["type"],$_GET["data"],$_GET["head"],$_GET["time"],$conn);
 
-$sql_host = ""; //数据库地址
-$sql_user = ""; //数据库用户名
-$sql_pwd = ""; //数据库密码
-$sql_dbname = ""; //数据库名
 
-function add($timeout,$ip,$port,$type,$data,$head,$time){
+function add($timeout,$name,$ip,$port,$type,$data,$head,$time,$conn){
     if($type == "GET") {
         $id = md5($ip.time().$time);
         $id = str_rand($id);
-        $r = sql_add_get($id,$timeout,$ip,$head);
+        $r = sql_add_get($id,$name,$timeout,$ip,$head,$time,$conn);
     }else if($type == "POST") {
         $id = md5($ip.time().$time);
         $id = str_rand($id);
-        $r = sql_add_post($id,$timeout,$ip,$data,$head);
+        $r = sql_add_post($id,$name,$timeout,$ip,$data,$head,$time,$conn);
     }else if($type == "PORT") {
         $id = md5($ip.time().$time);
         $id = str_rand($id);
-        $r = sql_add_port($id,$timeout,$ip);
+        $r = sql_add_port($id,$name,$timeout,$ip,$time,$conn);
     }else {
         return '{"code":-1,"msg":"未知的监控类型"}';
     }
@@ -37,9 +38,7 @@ function add($timeout,$ip,$port,$type,$data,$head,$time){
     }
 }
 
-function sql_add_get($id,$name,$timeout,$ip,$head){
-    global $sql_host,$sql_user,$sql_pwd,$sql_dbname;
-    $conn = mysqli_connect($sql_host, $sql_user, $sql_pwd, $sql_dbname);
+function sql_add_get($id,$name,$timeout,$ip,$head,$time,$conn){
     if (!$conn) {
         exit;
     }
@@ -56,9 +55,7 @@ function sql_add_get($id,$name,$timeout,$ip,$head){
     }
 }
 
-function sql_add_post($id,$name,$timeout,$ip,$data,$head){
-    global $sql_host,$sql_user,$sql_pwd,$sql_dbname;
-    $conn = mysqli_connect($sql_host, $sql_user, $sql_pwd, $sql_dbname);
+function sql_add_post($id,$name,$timeout,$ip,$data,$head,$time,$conn){
     if (!$conn) {
         exit;
     }
@@ -75,9 +72,7 @@ function sql_add_post($id,$name,$timeout,$ip,$data,$head){
     }
 }
 
-function sql_add_port($id,$name,$timeout,$ip){
-    global $sql_host,$sql_user,$sql_pwd,$sql_dbname;
-    $conn = mysqli_connect($sql_host, $sql_user, $sql_pwd, $sql_dbname);
+function sql_add_port($id,$name,$timeout,$ip,$time,$conn){
     if (!$conn) {
         exit;
     }
