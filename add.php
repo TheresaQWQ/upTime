@@ -20,16 +20,6 @@ function add($timeout,$email,$name,$ip,$port,$type,$data,$head,$time,$conn){
         exit;
     }
     
-    if(stripos("i".$name,"ddos")){
-        return '{"code":-1,"msg":"名称中含有违禁词"}';
-        exit;
-    }
-    
-    if(stripos("i".$ip,"jisuyingyong.com")){
-        return '{"code":-1,"msg":"黑名单网址，禁止添加"}';
-        exit;
-    }
-    
     if($time < 120){
         return '{"code":-1,"msg":"监控频率过快"}';
         exit;
