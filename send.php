@@ -27,7 +27,7 @@ function send_email($url,$id,$email){
     //邮件内容为HTML格式
     $mailtype = "HTML";
     //实例化对象
-    $smtp = new smtp($smtpserver,$smtpserverport,true,$smtpuser,$smtppass);
+    $smtp = new smtpSend($smtpserver,$smtpserverport,true,$smtpuser,$smtppass);
     //关闭调试信息
     $smtp->debug = false;
     //发送邮件
@@ -68,7 +68,7 @@ function send_email_token($token,$id,$email){
     //邮件内容为HTML格式
     $mailtype = "HTML";
     //实例化对象
-    $smtp = new smtp($smtpserver,$smtpserverport,true,$smtpuser,$smtppass);
+    $smtp = new smtpSend($smtpserver,$smtpserverport,true,$smtpuser,$smtppass);
     //关闭调试信息
     $smtp->debug = false;
     //发送邮件
@@ -84,7 +84,7 @@ function send_email_token($token,$id,$email){
 }
 
 /* smtp class */
-class smtp {
+class smtpSend {
     /* Public Variables */
     var $smtp_port;
     var $time_out;
