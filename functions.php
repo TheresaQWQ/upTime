@@ -130,21 +130,6 @@ function sql_add_port ($id, $name, $timeout, $ip, $time, $conn)
     }
 }
 
-function str_rand ($char)
-{
-    $length = 8;
-    if (! is_int($length) || $length < 0) {
-        return false;
-    }
-    
-    $string = '';
-    for ($i = $length; $i > 0; $i --) {
-        $string .= $char[mt_rand(0, strlen($char) - 1)];
-    }
-    
-    return $string;
-}
-
 function config_read_mysql_host ()
 {
     global $json;
@@ -485,7 +470,8 @@ function send_email ($url, $id, $email)
         <center>
         <h1>站点监控</h1>
         <hr>
-        <p>您的站点' . $url . '(ID:' . $id . ')无法访问，查看详细信息请点击下面的链接<p>
+        <p>您的站点' . $url .
+            '(ID:' . $id . ')无法访问，查看详细信息请点击下面的链接<p>
         <a href="https://t.qgitf.cn/s.php?id=' . $id .
             '">https://t.qgitf.cn/s.php?id=' . $id . '</a>
         </center>
@@ -531,9 +517,9 @@ function send_email_token ($token, $id, $email)
         <h1>站点监控</h1>
         <hr>
         <p>您正在删除您创建的监控，如果您没有此操作请无视此邮件</p>
-        <p>点击此链接删除您的监控<a href="https://t.qgitf.cn/del.php?token=' . $token .
-            '&id=' . $id . '">https://t.qgitf.cn/del.php?token=' . $token .
-            '&id=' . $id . '</a></p>
+        <p>点击此链接删除您的监控<a href="https://t.qgitf.cn/del.php?token=' .
+            $token . '&id=' . $id . '">https://t.qgitf.cn/del.php?token=' .
+            $token . '&id=' . $id . '</a></p>
         </center>
     ';
     // 邮件内容为HTML格式
