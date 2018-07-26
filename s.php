@@ -1,5 +1,6 @@
 <?
 error_reporting(0);
+include("config.php");
 $id = $_GET["id"];
 ?>
 <!DOCTYPE html>
@@ -68,10 +69,10 @@ $id = $_GET["id"];
             <div class="text">
                 <h1 class="mdui-text-center">
                     <?
-                        $sql_host = "";
-                        $sql_user = "";
-                        $sql_pwd = "";
-                        $sql_dbname = "";
+                        $sql_host = config_read_mysql_host();
+                        $sql_user = config_read_mysql_username();
+                        $sql_pwd = config_read_mysql_password();
+                        $sql_dbname = config_read_mysql_dbname();
                         
                         $id = $_GET["id"];
                         
@@ -96,10 +97,10 @@ $id = $_GET["id"];
                 <div id="tab1" class="mdui-p-a-2">
                     <iframe
                         src="./img.php?id=<?
-                        $sql_host = "";
-                        $sql_user = "";
-                        $sql_pwd = "";
-                        $sql_dbname = "";
+                        $sql_host = config_read_mysql_host();
+						$sql_user = config_read_mysql_username();
+						$sql_pwd = config_read_mysql_password();
+						$sql_dbname = config_read_mysql_dbname();
                         
                         $conn = mysqli_connect($sql_host, $sql_user, $sql_pwd, $sql_dbname);
                         if (!$conn) {

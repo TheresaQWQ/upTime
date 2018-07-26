@@ -1,11 +1,12 @@
 <?
 error_reporting(0);
+include("config.php");
 $id = $_GET["id"];
 
-$sql_host = "localhost";
-$sql_user = "jk";
-$sql_pwd = "20030616a";
-$sql_dbname = "jk";
+$sql_host = config_read_mysql_host();
+$sql_user = config_read_mysql_username();
+$sql_pwd = config_read_mysql_password();
+$sql_dbname = config_read_mysql_dbname();
 
 $conn = mysqli_connect($sql_host, $sql_user, $sql_pwd, $sql_dbname);
 if (!$conn) {

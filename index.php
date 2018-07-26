@@ -78,16 +78,17 @@
                             </thead>
                             <tbody class="mdui-typo">
                                 <?
-                                $sql_host = "localhost";
-                                $sql_user = "jk";
-                                $sql_pwd = "20030616a";
-                                $sql_dbname = "jk";
+                                include("config.php");
+                                $sql_host = config_read_mysql_host();
+                                $sql_user = config_read_mysql_username();
+                                $sql_pwd = config_read_mysql_password();
+                                $sql_dbname = config_read_mysql_dbname();
                                 
                                 $conn = mysqli_connect($sql_host, $sql_user, $sql_pwd, $sql_dbname);
                                 if (!$conn) {
                                     exit;
                                 }
-                                 
+                                
                                 $sql = "SELECT * FROM `list`";
                                 $result = mysqli_query($conn, $sql);
                                  
@@ -177,6 +178,7 @@
                         <small>2018-7-24</small>
                     </h1>
                     <p>这是 IMoe Public Status 的第一个版本</p>
+                    <p>GitHub：<a href="https://github.com/xiaoyaoge233/upTime">戳我</a></p>
                     <hr/>
                     <h1>
                         V 0.2

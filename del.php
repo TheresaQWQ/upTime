@@ -9,10 +9,10 @@ if(!$_GET["type"]){
 }else if($_GET["type"]){
     $id = $_GET["id"];
     
-    $sql_host = "";
-    $sql_user = "";
-    $sql_pwd = "";
-    $sql_dbname = "";
+    $sql_host = config_read_mysql_host();
+    $sql_user = config_read_mysql_username();
+    $sql_pwd = config_read_mysql_password();
+    $sql_dbname = config_read_mysql_dbname();
     
     $conn = mysqli_connect($sql_host, $sql_user, $sql_pwd, $sql_dbname);
     $sql = "SELECT * FROM `list` WHERE `id` = '$id'";
@@ -39,10 +39,10 @@ if(!$_GET["type"]){
 }
 
 function createToken($id){
-    $sql_host = "";
-    $sql_user = "";
-    $sql_pwd = "";
-    $sql_dbname = "";
+    $sql_host = config_read_mysql_host();
+    $sql_user = config_read_mysql_username();
+    $sql_pwd = config_read_mysql_password();
+    $sql_dbname = config_read_mysql_dbname();
     
     $token = str_rand();
     $time = time() + 3600;
@@ -54,10 +54,10 @@ function createToken($id){
 }
 
 function checkToken($token,$id){
-    $sql_host = "";
-    $sql_user = "";
-    $sql_pwd = "";
-    $sql_dbname = "";
+    $sql_host = config_read_mysql_host();
+    $sql_user = config_read_mysql_username();
+    $sql_pwd = config_read_mysql_password();
+    $sql_dbname = config_read_mysql_dbname();
 
     $conn = mysqli_connect($sql_host, $sql_user, $sql_pwd, $sql_dbname);
     $sql = "SELECT * FROM `token` WHERE `token` = '$token'";

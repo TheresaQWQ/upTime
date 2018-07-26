@@ -1,16 +1,18 @@
 <?php
+include("config.php");
+
 function send_email($url,$id,$email){
-    $smtpserver = "";
+    $smtpserver = config_read_email_server();
     //SMTP端口号
-    $smtpserverport = 25;
+    $smtpserverport = config_read_email_port();
     //SMTP发邮件的邮箱
-    $smtpusermail = "";
+    $smtpusermail = config_read_email_useremail();
     //收信邮箱
     $smtpemailto = $email;
     //SMTP用户名
-    $smtpuser = "";
+    $smtpuser = config_read_email_username();
     //SMTP用户密码
-    $smtppass = "";
+    $smtppass = config_read_email_password();
     //主题
     $mailtitle = "Public Status | IMOE站点监控";
     //构建内容
@@ -41,17 +43,17 @@ function send_email($url,$id,$email){
 }
 
 function send_email_token($token,$id,$email){
-    $smtpserver = "";
+    $smtpserver = config_read_email_server();
     //SMTP端口号
-    $smtpserverport = 25;
+    $smtpserverport = config_read_email_port();
     //SMTP发邮件的邮箱
-    $smtpusermail = "";
+    $smtpusermail = config_read_email_useremail();
     //收信邮箱
     $smtpemailto = $email;
     //SMTP用户名
-    $smtpuser = "";
+    $smtpuser = config_read_email_username();
     //SMTP用户密码
-    $smtppass = "";
+    $smtppass = config_read_email_password();
     //主题
     $mailtitle = "Public Status | IMOE站点监控";
     //构建内容
