@@ -1,10 +1,5 @@
 <?php
-$send_email = true; //离线时发送邮件
 function send_email($url,$id,$email){
-    if(!$send_email){
-        exit;
-    }
-    //SMTP服务器
     $smtpserver = "";
     //SMTP端口号
     $smtpserverport = 25;
@@ -17,9 +12,16 @@ function send_email($url,$id,$email){
     //SMTP用户密码
     $smtppass = "";
     //主题
-    $mailtitle = "Public Status Pages";
+    $mailtitle = "Public Status | IMOE站点监控";
     //构建内容
-    $mailcontent = "您的站点".$url."(ID:".$id.")无法访问，查看详细信息请点击下面的链接https://s.qgitf.cn/a/s.php?id=".$id;
+    $mailcontent = '
+        <center>
+        <h1>站点监控</h1>
+        <hr>
+        <p>您的站点'.$url.'(ID:'.$id.')无法访问，查看详细信息请点击下面的链接<p>
+        <a href="https://t.qgitf.cn/s.php?id='.$id.'">https://t.qgitf.cn/s.php?id='.$id.'</a>
+        </center>
+    ';
     //邮件内容为HTML格式
     $mailtype = "HTML";
     //实例化对象
@@ -31,7 +33,48 @@ function send_email($url,$id,$email){
     //检查发送状态
     if($state==""){
         return false; //配置错误
-    }else if(strlen($state)!=0){
+    }else if(strlen($state)){
+        return true;
+    }else{
+        return false; //未知错误
+    }
+}
+
+function send_email_token($token,$id,$email){
+    $smtpserver = "";
+    //SMTP端口号
+    $smtpserverport = 25;
+    //SMTP发邮件的邮箱
+    $smtpusermail = "";
+    //收信邮箱
+    $smtpemailto = $email;
+    //SMTP用户名
+    $smtpuser = "";
+    //SMTP用户密码
+    $smtppass = "";
+    //主题
+    $mailtitle = "Public Status | IMOE站点监控";
+    //构建内容
+    $mailcontent = '
+        <center>
+        <h1>站点监控</h1>
+        <hr>
+        <p>您正在删除您创建的监控，如果您没有此操作请无视此邮件</p>
+        <p>点击此链接删除您的监控<a href="https://t.qgitf.cn/del.php?token='.$token.'&id='.$id.'">https://t.qgitf.cn/del.php?token='.$token.'&id='.$id.'</a></p>
+        </center>
+    ';
+    //邮件内容为HTML格式
+    $mailtype = "HTML";
+    //实例化对象
+    $smtp = new smtp($smtpserver,$smtpserverport,true,$smtpuser,$smtppass);
+    //关闭调试信息
+    $smtp->debug = false;
+    //发送邮件
+    $state = $smtp->sendmail($smtpemailto, $smtpusermail, $mailtitle, $mailcontent, $mailtype);
+    //检查发送状态
+    if($state==""){
+        return false; //配置错误
+    }else if(strlen($state)){
         return true;
     }else{
         return false; //未知错误

@@ -61,6 +61,8 @@
                 <div class="mdui-tab mdui-tab-full-width" mdui-tab>
                     <a href="#tab1" class="mdui-ripple">列表</a>
                     <a href="#tab2" class="mdui-ripple">添加</a>
+                    <a href="#tab3" class="mdui-ripple">删除</a>
+                    <a href="#tab4" class="mdui-ripple">更新日志</a>
                 </div>
                 <div id="tab1" class="mdui-p-a-2">
                     <div class="mdui-table-fluid">
@@ -69,16 +71,17 @@
                                 <tr>
                                     <th>#</th>
                                     <th>名称</th>
+                                    <th>ID</th>
                                     <th>类型</th>
                                     <th>状态</th>
                                 </tr>
                             </thead>
                             <tbody class="mdui-typo">
                                 <?
-                                $sql_host = "";
-                                $sql_user = "";
-                                $sql_pwd = "";
-                                $sql_dbname = "";
+                                $sql_host = "localhost";
+                                $sql_user = "jk";
+                                $sql_pwd = "20030616a";
+                                $sql_dbname = "jk";
                                 
                                 $conn = mysqli_connect($sql_host, $sql_user, $sql_pwd, $sql_dbname);
                                 if (!$conn) {
@@ -111,6 +114,9 @@
                                     echo $name;
                                     echo '</td>';
                                     echo '<td>';
+                                    echo $row["id"];
+                                    echo '</td>';
+                                    echo '<td>';
                                     echo $row["type"];
                                     echo '</td>';
                                     echo $online;
@@ -129,7 +135,7 @@
                         <input id="name" class="mdui-textfield-input" type="text" placeholder="监控名称"/>
                     </div>
                     <div class="mdui-textfield mdui-textfield-floating-label">
-                        <input id="email" class="mdui-textfield-input" type="email" placeholder="邮箱（离线时邮件通知）"/>
+                        <input id="email" class="mdui-textfield-input" type="email" placeholder="邮箱（离线时邮件通知，收不到可以将imoe233@163.com加入白名单）"/>
                     </div>
                     <div class="mdui-textfield mdui-textfield-floating-label">
                         <input id="type" class="mdui-textfield-input" type="text" placeholder="类型（GET，POST或PORT，大写）"/>
@@ -156,8 +162,80 @@
                         <button onclick="ajax();" class="mdui-btn mdui-btn-raised mdui-ripple">提交</button>
                     </center>
                 </div>
+                <div id="tab3" class="mdui-p-a-2">
+                    <div class="mdui-textfield mdui-textfield-floating-label">
+                        <input id="id" class="mdui-textfield-input" type="text" placeholder="您的监控ID"/>
+                    </div>
+                    <center>
+                        <button onclick="ajax_del();" class="mdui-btn mdui-btn-raised mdui-ripple">提交</button>
+                    </center>
+                </div>
+                <div id="tab4" class="mdui-p-a-2 mdui-typo">
+                    <h1>
+                        V 0.1
+                        <br/>
+                        <small>2018-7-24</small>
+                    </h1>
+                    <p>这是 IMoe Public Status 的第一个版本</p>
+                    <hr/>
+                    <h1>
+                        V 0.2
+                        <br/>
+                        <small>2018-7-25</small>
+                    </h1>
+                    <p>1.修复了0.1中的BUG，由原来的socket检测改为了fsockopen</p>
+                    <p>2.增加折线图</p>
+                    <hr/>
+                    <h1>
+                        V 0.3
+                        <br/>
+                        <small>2018-7-25</small>
+                    </h1>
+                    <p>1.增加邮箱提醒（imoe233@163.com）</p>
+                    <hr/>
+                    <h1>
+                        V 0.4
+                        <br/>
+                        <small>2018-7-26</small>
+                    </h1>
+                    <p>增加删除功能</p>
+                </div>
             </div>
         </div>
+        <script>
+            function ajax_del(){
+                var xmlhttp;
+                
+                var id = document.getElementById("id").value;
+                if (window.XMLHttpRequest){
+                    // IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+                    xmlhttp=new XMLHttpRequest();
+                }
+                else
+                {
+                    // IE6, IE5 浏览器执行代码
+                    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+                }
+                xmlhttp.onreadystatechange=function()
+                {
+                    if (xmlhttp.readyState==4 && xmlhttp.status==200)
+                    {
+                        var json = xmlhttp.responseText
+                        console.log(json);
+                        obj = JSON.parse(json);
+                        var text = obj.msg;
+                        var code = obj.code;
+                        mdui.alert(text);
+                        if(code == 200){
+                            document.getElementById("id").value == "";
+                        }
+                    }
+                }
+                //Ajax请求
+                xmlhttp.open("GET","./del.php?type=send&id="+id,true);
+                xmlhttp.send();
+            }
+        </script>
         <script>
             function ajax(){
                 var xmlhttp;

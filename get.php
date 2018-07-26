@@ -2,10 +2,10 @@
 error_reporting(0);
 include("send.php");
 
-$sql_host = "";
-$sql_user = "";
-$sql_pwd = "";
-$sql_dbname = "";
+$sql_host = "localhost";
+$sql_user = "jk";
+$sql_pwd = "20030616a";
+$sql_dbname = "jk";
 $connA = mysqli_connect($sql_host, $sql_user, $sql_pwd, $sql_dbname);
 $connB = mysqli_connect($sql_host, $sql_user, $sql_pwd, $sql_dbname);
 $connC = mysqli_connect($sql_host, $sql_user, $sql_pwd, $sql_dbname);
@@ -86,7 +86,7 @@ function port($conn){
 
 function curl_get($url,$id,$head,$timeout,$email) {
     $t = new runTime;
-    $t->runTime();
+    $t->rTime();
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_NOBODY, true);
@@ -99,18 +99,18 @@ function curl_get($url,$id,$head,$timeout,$email) {
     curl_exec($ch);
     $httpCode = curl_getinfo($ch,CURLINFO_HTTP_CODE);
     curl_close($ch);
-    $time = $t->runTime(1);
+    $time = $t->rTime(1);
     if(200 <= $httpCode && $httpCode < 300 || $httpCode == 301 || $httpCode == 302){
         sql_add($id,$httpCode,"true",$time);
     }else{
-        sql_add($id,$httpCode,"false",-1);
         send_email($url,$id,$email);
+        sql_add($id,$httpCode,"false",-1);
     }
 }
 
 function curl_post($url,$id,$head,$data,$timeout,$email) {
     $t = new runTime;
-    $t->runTime();
+    $t->rTime();
     
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
@@ -129,27 +129,27 @@ function curl_post($url,$id,$head,$data,$timeout,$email) {
     curl_exec($ch);
     $httpCode = curl_getinfo($ch,CURLINFO_HTTP_CODE);
     curl_close($ch);
-    $time = $t->runTime(1);
+    $time = $t->rTime(1);
     if(200 <= $httpCode && $httpCode < 300 || $httpCode == 301 || $httpCode == 302){
         sql_add($id,$httpCode,"true",$time);
     }else{
-        sql_add($id,$httpCode,"false",$time);
         send_email($url,$id,$email);
+        sql_add($id,$httpCode,"false",$time);
     }
 }
 
 function port_get($id,$ip,$port,$timeout,$email){
     $t = new runTime;
-    $t->runTime();
+    $t->rTime();
     
     $r = fsockopen($ip, $port, $errno, $errstr, $timeout);
     
-    $time = $t->runTime(1);
+    $time = $t->rTime(1);
     if($r){
         sql_add($id,-1,"true",$time);
     }else{
+        send_email($url,$id,$email);
         sql_add($id,-1,"false",-1);
-        send_email($ip.":".$port,$id,$email);
     }
     
     fclose($r);
@@ -189,7 +189,7 @@ function port_add($id,$httpCode,$status,$netTime){
 }
 
 class runTime {
-    public function runTime($mode = 0){
+    public function rTime($mode = 0){
         static $t;
         if (!$mode) {
             $t = microtime();
