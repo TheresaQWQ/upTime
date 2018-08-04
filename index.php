@@ -78,51 +78,53 @@
                             </thead>
                             <tbody class="mdui-typo">
                                 <?
-                                include("config.php");
+                                include ("config.php");
                                 $sql_host = config_read_mysql_host();
                                 $sql_user = config_read_mysql_username();
                                 $sql_pwd = config_read_mysql_password();
                                 $sql_dbname = config_read_mysql_dbname();
                                 
-                                $conn = mysqli_connect($sql_host, $sql_user, $sql_pwd, $sql_dbname);
-                                if (!$conn) {
-                                    exit;
+                                $conn = mysqli_connect($sql_host, $sql_user,
+                                        $sql_pwd, $sql_dbname);
+                                if (! $conn) {
+                                    exit();
                                 }
                                 
                                 $sql = "SELECT * FROM `list`";
                                 $result = mysqli_query($conn, $sql);
-                                 
+                                
                                 if (mysqli_num_rows($result) > 0) {
-                                    $i=0;
-                                while($row = mysqli_fetch_assoc($result)) {
-                                    $id = $row["id"];
-                                    $sql = "SELECT * FROM `log` WHERE `id` = '$id' ORDER BY `time` DESC LIMIT 1";
-                                    $res = mysqli_query($conn, $sql);
-                                    $r = mysqli_fetch_assoc($res);
-                                if($r["status"] == "true"){
-                                    $online = '<td style="color: green">在线';
-                                }else{
-                                    $online = '<td style="color: red">离线';
-                                }
-                                
-                                $name = '<a href="./s.php?id='.$id.'">'.$row["name"].'</a>';
-                                
-                                    $i++;
-                                    echo '<tr><td>';
-                                    echo $i;
-                                    echo '</td>';
-                                    echo '<td>';
-                                    echo $name;
-                                    echo '</td>';
-                                    echo '<td>';
-                                    echo $row["id"];
-                                    echo '</td>';
-                                    echo '<td>';
-                                    echo $row["type"];
-                                    echo '</td>';
-                                    echo $online;
-                                    echo '</td>';
-                                    echo '</tr>';
+                                    $i = 0;
+                                    while ($row = mysqli_fetch_assoc($result)) {
+                                        $id = $row["id"];
+                                        $sql = "SELECT * FROM `log` WHERE `id` = '$id' ORDER BY `time` DESC LIMIT 1";
+                                        $res = mysqli_query($conn, $sql);
+                                        $r = mysqli_fetch_assoc($res);
+                                        if ($r["status"] == "true") {
+                                            $online = '<td style="color: green">在线';
+                                        } else {
+                                            $online = '<td style="color: red">离线';
+                                        }
+                                        
+                                        $name = '<a href="./s.php?id=' . $id .
+                                                '">' . $row["name"] . '</a>';
+                                        
+                                        $i ++;
+                                        echo '<tr><td>';
+                                        echo $i;
+                                        echo '</td>';
+                                        echo '<td>';
+                                        echo $name;
+                                        echo '</td>';
+                                        echo '<td>';
+                                        echo $row["id"];
+                                        echo '</td>';
+                                        echo '<td>';
+                                        echo $row["type"];
+                                        echo '</td>';
+                                        echo $online;
+                                        echo '</td>';
+                                        echo '</tr>';
                                     }
                                 }
                                 mysqli_close($conn);
@@ -173,6 +175,12 @@
                 </div>
                 <div id="tab4" class="mdui-p-a-2 mdui-typo">
                     <h1>
+                        Informations
+                    </h1>
+                    <p>GitHub: <a href="https://github.com/xiaoyaoge233/upTime">戳我</a></p>
+                    <p>Jenkins: <a href='https://jenkins-cn.ishland.site/job/UpTime/'><img src='https://jenkins-cn.ishland.site/job/UpTime/badge/icon'></a></p>
+                    <hr/>
+                    <h1>
                         V 0.4
                         <br/>
                         <small>2018-7-26</small>
@@ -200,7 +208,6 @@
                         <small>2018-7-24</small>
                     </h1>
                     <p>这是 IMoe Public Status 的第一个版本</p>
-                    <p>GitHub：<a href="https://github.com/xiaoyaoge233/upTime">戳我</a></p>
                     <hr/>
                 </div>
             </div>
