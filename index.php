@@ -10,7 +10,7 @@
 </head>
 
 <body>
-	<style>
+	<style type="text/css">
 .page-top {
 	background-color: rgb(12, 135, 235);
 	margin: 0;
@@ -177,20 +177,28 @@
 					<input id="time" class="mdui-textfield-input" type="text"
 						placeholder="监控频率（多少秒一次，至少120秒）" />
 				</div>
-				<center>
-					<button onclick="ajax();"
-						class="mdui-btn mdui-btn-raised mdui-ripple">提交</button>
-				</center>
+				<element>
+					<center>
+						<button onclick="ajax();"
+							class="mdui-btn mdui-btn-raised mdui-ripple">
+							提交
+						</button>
+					</center>
+				</element>
 			</div>
 			<div id="tab3" class="mdui-p-a-2">
 				<div class="mdui-textfield mdui-textfield-floating-label">
 					<input id="id" class="mdui-textfield-input" type="text"
 						placeholder="您的监控ID" />
 				</div>
-				<center>
-					<button onclick="ajax_del();"
-						class="mdui-btn mdui-btn-raised mdui-ripple">提交</button>
-				</center>
+				<element>
+					<center>
+						<button onclick="ajax_del();"
+							class="mdui-btn mdui-btn-raised mdui-ripple">
+							提交
+						</button>
+					</center>
+				</element>
 			</div>
 			<div id="tab4" class="mdui-p-a-2 mdui-typo">
 				<h1>Informations</h1>
@@ -201,6 +209,11 @@
 					Jenkins: <a href='https://jenkins-cn.ishland.site/job/UpTime/'><img
 						src='https://jenkins-cn.ishland.site/job/UpTime/badge/icon'></a>
 				</p>
+				<hr />
+				<h1>
+				    V 0.5 <br /> <small>2018-8-8</small>
+				</h1>
+				<p>修复了发送邮件的一些问题</p>
 				<hr />
 				<h1>
 					V 0.4 <br /> <small>2018-7-26</small>
