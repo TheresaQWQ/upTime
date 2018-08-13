@@ -19,7 +19,8 @@ function send_email ($r, $email, $type)
             <center>
             <h1>站点监控</h1>
             <hr>
-            <p>您的站点' . $r[1] . '(ID:' . $r[2] . ')无法访问，查看详细信息请点击下面的链接<p>
+            <p>您的站点' . $r[1] .
+                '(ID:' . $r[2] . ')无法访问，查看详细信息请点击下面的链接<p>
             <a href="https://t.qgitf.cn/s.php?id=' . $r[2] .
                 '">https://t.qgitf.cn/s.php?id=' . $r[2] . '</a>
             </center>
@@ -31,10 +32,9 @@ function send_email ($r, $email, $type)
             <h1>站点监控</h1>
             <hr>
             <p>您正在删除您创建的监控，如果您没有此操作请无视此邮件</p>
-            <p>点击此链接删除您的监控<a href="https://t.qgitf.cn/del.php?token=' .
-                    $r[1] . '&id=' . $r[2] .
-                    '">https://t.qgitf.cn/del.php?token=' . $r[1] . '&id=' .
-                    $r[2] . '</a></p>
+            <p>点击此链接删除您的监控<a href="https://t.qgitf.cn/del.php?token=' . $r[1] .
+                    '&id=' . $r[2] . '">https://t.qgitf.cn/del.php?token=' .
+                    $r[1] . '&id=' . $r[2] . '</a></p>
             </center>
         ';
         }

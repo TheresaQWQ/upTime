@@ -178,12 +178,10 @@
 						placeholder="监控频率（多少秒一次，至少120秒）" />
 				</div>
 				<element>
-					<center>
-						<button onclick="ajax();"
-							class="mdui-btn mdui-btn-raised mdui-ripple">
-							提交
-						</button>
-					</center>
+				<center>
+					<button onclick="ajax();"
+						class="mdui-btn mdui-btn-raised mdui-ripple">提交</button>
+				</center>
 				</element>
 			</div>
 			<div id="tab3" class="mdui-p-a-2">
@@ -192,12 +190,10 @@
 						placeholder="您的监控ID" />
 				</div>
 				<element>
-					<center>
-						<button onclick="ajax_del();"
-							class="mdui-btn mdui-btn-raised mdui-ripple">
-							提交
-						</button>
-					</center>
+				<center>
+					<button onclick="ajax_del();"
+						class="mdui-btn mdui-btn-raised mdui-ripple">提交</button>
+				</center>
 				</element>
 			</div>
 			<div id="tab4" class="mdui-p-a-2 mdui-typo">
@@ -211,7 +207,7 @@
 				</p>
 				<hr />
 				<h1>
-				    V 0.5 <br /> <small>2018-8-8</small>
+					V 0.5 <br /> <small>2018-8-8</small>
 				</h1>
 				<p>修复了发送邮件的一些问题</p>
 				<hr />
